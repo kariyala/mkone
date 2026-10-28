@@ -160,20 +160,20 @@ h2{
   width:68px;
   height:68px;
   border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.35);
   display:flex;
   align-items:center;
   justify-content:center;
   margin:0 auto;
-  font-size:26px;
-  font-weight:700;
-  color:#fff;
-  transition:transform 180ms ease, box-shadow 180ms ease;
+  color:var(--accent);
+  transition:transform 180ms ease, color 180ms ease;
 }
+.icon-tile svg,.icon-tile-sm svg,.picker-icon svg{width:100%;height:100%;display:block;overflow:visible}
+.icon-tile svg{width:78%;height:78%}
+.icon-tile-sm svg,.picker-icon svg{width:100%;height:100%}
 
 .icon-tile:hover{
-  transform:scale(1.06);
-  box-shadow:0 10px 24px rgba(0,0,0,0.45);
+  transform:scale(1.08);
+  color:#3ee594;
 }
 
 .app-label{
@@ -197,7 +197,7 @@ a{text-decoration:none;color:inherit}
 /* Mobile */
 @media(max-width:520px){
   .app-grid{grid-template-columns:repeat(3,1fr); gap:22px 10px}
-  .icon-tile{width:58px; height:58px; font-size:22px; border-radius:14px}
+  .icon-tile{width:58px; height:58px; border-radius:14px}
   .app-label{font-size:12px}
 }
 
@@ -328,11 +328,8 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:15px;
-  font-weight:700;
-  color:#fff;
+  color:var(--accent);
   flex-shrink:0;
-  box-shadow:0 6px 14px rgba(0,0,0,0.35);
 }
 
 .archive-row-name{
@@ -457,9 +454,7 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:700;
-  color:#fff;
-  font-size:15px;
+  color:var(--accent);
   flex-shrink:0;
 }
 
@@ -560,7 +555,7 @@ a{text-decoration:none;color:inherit}
 
 <script>
 const APPS = [
-  { id:"details-copy",   name:"Details Copy",     url:"https://kariyala.github.io/details-copy/", icon:"https://kariyala.github.io/details-copy/information.png" },
+  { id:"details-copy",   name:"Details Copy",     url:"https://kariyala.github.io/details-copy/" },
   { id:"price-per-unit", name:"Price Per Unit",   url:"https://kariyala.github.io/price-per-unit/" },
   { id:"hst",            name:"HST",              url:"https://kariyala.github.io/hst/" },
   { id:"calculator-h",   name:"Calculator-H",     url:"https://kariyala.github.io/calculator-h/" },
@@ -568,7 +563,7 @@ const APPS = [
   { id:"yt-thumbnail",   name:"YT Thumbnail",     url:"https://kariyala.github.io/yt/ythumb/" },
   { id:"yt-embed",       name:"YT Embed",         url:"https://kariyala.github.io/yt/ytembed/" },
   { id:"currency",       name:"Currency Exchange",url:"https://kariyala.github.io/exchange-rate/" },
-  { id:"astro",          name:"Astro",            url:"https://kariyala.github.io/astro/", icon:"https://i.ibb.co/DHxfZfN4/zodiac1.png" },
+  { id:"astro",          name:"Astro",            url:"https://kariyala.github.io/astro/" },
   { id:"tally",          name:"Tally Counter",    url:"https://kariyala.github.io/tally-counter/" },
   { id:"debt",           name:"Debt Calculator",  url:"https://kariyala.github.io/debt-calculator/" }
 ];
@@ -583,17 +578,39 @@ function colorFor(id){
 let archived = JSON.parse(localStorage.getItem("mk_archived") || "[]");
 function saveArchived(){ localStorage.setItem("mk_archived", JSON.stringify(archived)); }
 
+
+const SV = (inner, extra="") => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${inner}</svg>`;
+const CUT = 'fill="var(--card)" stroke="currentColor"';
+function zodiacDots(){
+  let d="";
+  for(let i=0;i<12;i++){
+    const a=i*Math.PI/6 - Math.PI/2;
+    d+=`<circle cx="${(12+8.1*Math.cos(a)).toFixed(2)}" cy="${(12+8.1*Math.sin(a)).toFixed(2)}" r="0.95" fill="currentColor" stroke="none"/>`;
+  }
+  return d;
+}
+const ICONS = {
+  "details-copy": SV(`<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>`),
+  "price-per-unit": SV(`<path d="M3 3h8.2a2 2 0 0 1 1.4.6l8 8a2 2 0 0 1 0 2.8l-6.2 6.2a2 2 0 0 1-2.8 0l-8-8A2 2 0 0 1 3 11.2z"/><circle cx="7" cy="7" r="1.1"/><path d="M15.6 12.4c0-.9-.9-1.5-2-1.5s-2 .6-2 1.4.8 1.2 2 1.5 2 .7 2 1.6-.9 1.5-2 1.5-2-.6-2-1.4M13.6 9.6v1.3M13.6 16.5v1.3" transform="rotate(45 13.6 13.7) translate(0 0)" stroke-width="1.5"/>`),
+  "hst": SV(`<path d="M12 1.6l1.5 2.8 1.9-.7-.5 3 2.4-1.2-.5 2.2 1.7.8-3.4 2.9.6 1.4-3.1-.5v2h-1.2v-2l-3.1.5.6-1.4-3.4-2.9 1.7-.8-.5-2.2 2.4 1.2-.5-3 1.9.7z" fill="currentColor" stroke-width=".6" transform="translate(0 -.4) scale(1 .95)"/><path d="M16.5 14.8L7.5 22"/><circle cx="8" cy="16.2" r="1.6"/><circle cx="16" cy="20.6" r="1.6"/>`),
+  "calculator-h": SV(`<rect x="4" y="2.5" width="16" height="19" rx="2.5"/><rect x="7" y="5.5" width="10" height="3.5" rx=".8"/><g fill="currentColor" stroke="none"><circle cx="8.5" cy="13" r="1.1"/><circle cx="12" cy="13" r="1.1"/><circle cx="15.5" cy="13" r="1.1"/><circle cx="8.5" cy="17" r="1.1"/><circle cx="12" cy="17" r="1.1"/><circle cx="15.5" cy="17" r="1.1"/></g>`),
+  "yt-timestamp": SV(`<rect x="2" y="4" width="17" height="13" rx="4"/><path d="M9 8.3v4.9l4.2-2.45z"/><circle cx="18" cy="17" r="4.6" ${CUT}/><path d="M18 14.6V17l1.7 1"/>`),
+  "yt-thumbnail": SV(`<rect x="2" y="4" width="20" height="16" rx="5"/><rect x="6.5" y="8" width="8.5" height="6.5" rx="1.2"/><path d="M7 13.6l2.4-2.4 1.6 1.5 1.2-1 2.3 1.9"/><circle cx="9" cy="10" r=".75" fill="currentColor" stroke="none"/><path d="M16.6 14.2v4l3.2-2z" fill="currentColor" stroke-width="1"/>`),
+  "yt-embed": SV(`<rect x="2" y="4.5" width="20" height="15" rx="5"/><path d="M10 9.3L7.3 12l2.7 2.7M14 9.3l2.7 2.7-2.7 2.7M12.9 8.8l-1.8 6.4"/>`),
+  "currency": SV(`<path d="M9.2 5.2C9.2 4.2 8.3 3.6 7 3.6S4.8 4.2 4.8 5.2 5.7 6.6 7 7s2.2.6 2.2 1.7S8.3 10.4 7 10.4 4.8 9.8 4.8 8.8M7 2.2v1.4M7 10.4v1.4"/><path d="M13 7h7M17.6 4.4L20.2 7l-2.6 2.6"/><path d="M11 17H4M6.4 14.4L3.8 17l2.6 2.6"/><path d="M14 13h6M14 15.6h6M14.4 13h2.3a2.4 2.4 0 0 1 0 4.8h-2.3l4.8 3.4"/>`),
+  "astro": SV(`<circle cx="12" cy="12" r="10.5"/><circle cx="12" cy="12" r="5.6"/>${zodiacDots()}<path d="M12 9.6l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7z" fill="currentColor" stroke="none"/>`),
+  "tally": SV(`<path d="M5 5v14M9.5 5v14M14 5v14M18.5 5v14"/><path d="M2.5 16.5L21.5 7.5"/>`),
+  "debt": SV(`<rect x="2" y="6" width="20" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.8"/><path d="M5.5 12h.01M18.5 12h.01" stroke-width="2.4"/>`)
+};
 function iconTileInner(app){
-  return app.icon
-    ? `<img src="${app.icon}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`
-    : app.name.charAt(0).toUpperCase();
+  return ICONS[app.id] || SV(`<circle cx="12" cy="12" r="9"/>`);
 }
 
 function appTile(app){
   return `
     <div class="app">
       <a href="${app.url}" target="_blank">
-        <div class="icon-tile" style="background:${app.icon ? 'transparent' : colorFor(app.id)}">${iconTileInner(app)}</div>
+        <div class="icon-tile" style="background:transparent">${iconTileInner(app)}</div>
         <div class="app-label">${app.name}</div>
       </a>
     </div>`;
@@ -602,7 +619,7 @@ function appTile(app){
 function archiveRow(app){
   return `
     <div class="archive-row" data-id="${app.id}">
-      <div class="icon-tile-sm" style="background:${app.icon ? 'transparent' : colorFor(app.id)}">${iconTileInner(app)}</div>
+      <div class="icon-tile-sm" style="background:transparent">${iconTileInner(app)}</div>
       <div class="archive-row-name">${app.name}</div>
       <div class="archive-dots" data-dots data-id="${app.id}" aria-label="Options">
         <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
@@ -810,7 +827,7 @@ document.getElementById("archiveAddBtn").addEventListener("click", ()=>{
   list.innerHTML = available.length
     ? available.map(a => `
         <div class="picker-row" data-id="${a.id}">
-          <div class="picker-icon" style="background:${a.icon ? 'transparent' : colorFor(a.id)}">${iconTileInner(a)}</div>
+          <div class="picker-icon" style="background:transparent">${iconTileInner(a)}</div>
           <div class="picker-name">${a.name}</div>
           <div class="picker-check"></div>
         </div>`).join("")
